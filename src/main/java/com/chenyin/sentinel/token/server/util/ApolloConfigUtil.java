@@ -50,17 +50,17 @@ public final class ApolloConfigUtil {
     /**
      * apollo管理员名称
      */
-    public static final String APOLLO_MASTER_NAME = "shenyi";
+    public static final String APOLLO_MASTER_NAME = "";
 
     /**
      * apollo portal url
      */
-    public static final String APOLLO_PORTAL_URL = "http://apollo.ywwl.com";
+    public static final String APOLLO_PORTAL_URL = "";
 
     /**
      * apollo 第三方应用token
      */
-    public static final String APOLLO_TOKEN = "423670ef5234331eaebae5a1ed9c379c00f3cef6";
+    public static final String APOLLO_TOKEN = "";
 
     private ApolloConfigUtil() {
     }
