@@ -1,5 +1,6 @@
-# curator-sentinel-token-server
-基于curator、apollo实现的sentinel token server集群实现
+# 基于curator、apollo实现的sentinel token server集群实现
+
+## 如何启动？
 
 1、修改ApolloConfigUtil.APOLLO_PORTAL_URL、APOLLO_TOKEN、APOLLO_MASTER_NAME为自己的Apollo配置
 
@@ -8,7 +9,7 @@
 启动MainApplication
 
 
-实现关键点
+## 实现关键点
 
 1、不同业务应用(对应使用appId当做sentinel中projectName，及控制台左侧名称)
 
