@@ -6,7 +6,7 @@
 
 2. 修改application-rd.properties中的apollo.meta及zk连接地址
 
-启动MainApplication
+3. 启动MainApplication
 
 
 ## 实现关键点
