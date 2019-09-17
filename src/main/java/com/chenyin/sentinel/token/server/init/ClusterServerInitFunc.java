@@ -43,7 +43,7 @@ public class ClusterServerInitFunc implements InitFunc {
     @Override
     public void init() throws Exception {
         String tokenServerNamespace = ApolloConfigUtil.getTokenServerNamespaceName();
-        //监听特定namespace下的集群限流规则
+        // 监听特定namespace下的集群限流规则
         initPropertySupplier();
         // 设置tokenServer管辖的作用域(即管理哪些应用)
         initTokenServerNameSpaces(tokenServerNamespace);

@@ -43,28 +43,22 @@ public class ApolloClusterConfigManager{
         String sentinelAppId = ApolloConfigUtil.getSentinelAppId();
         List<OpenNamespaceDTO> namespaceDTOList = apolloOpenApiClient.getNamespaces(sentinelAppId, projectEnv,
                 "default");
-        //遍历nameSpace查找集群配置所在item，修改业务应用限流规则中的token server配置 的ip、port
-        for (OpenNamespaceDTO openNamespaceDTO : namespaceDTOList) {
-            String nameSpaceName = openNamespaceDTO.getNamespaceName();
-            //token server所在nameSpace不作处理
-            if (ApolloConfigUtil.getTokenServerNamespaceName().equals(nameSpaceName)) {
-                continue;
-            }
-            List<OpenItemDTO> itemDTOList = openNamespaceDTO.getItems();
-            if (itemDTOList == null || itemDTOList.isEmpty()) {
-                continue;
-            }
-            //找到配置了集群限流的item
-            Optional<OpenItemDTO> clusterConfigItem =
-                    itemDTOList.stream().filter(t -> ApolloConfigUtil.getTokenServerClusterMapDataId().equals(t.getKey())).findAny();
-            if (!clusterConfigItem.isPresent()) {
-                continue;
-            }
+        String tokenServerNameSpaceName = ApolloConfigUtil.getTokenServerNamespaceName();
 
-            publishMasterTokenServerAddress(clusterConfigItem.get(), openNamespaceDTO.getNamespaceName(), ip, port);
-
-
+        //查询token server nameSpace
+        OpenNamespaceDTO openNamespaceDTO = apolloOpenApiClient.getNamespace(sentinelAppId, projectEnv, "default",
+                tokenServerNameSpaceName);
+        List<OpenItemDTO> itemDTOList = openNamespaceDTO.getItems();
+        if (itemDTOList == null || itemDTOList.isEmpty()) {
+            return;
         }
+        //找到配置了集群限流的item
+        Optional<OpenItemDTO> clusterConfigItem =
+                itemDTOList.stream().filter(t -> ApolloConfigUtil.getTokenServerClusterMapDataId().equals(t.getKey())).findAny();
+        if (!clusterConfigItem.isPresent()) {
+            return;
+        }
+        publishMasterTokenServerAddress(clusterConfigItem.get(), openNamespaceDTO.getNamespaceName(), ip, port);
     }
 
     /**
@@ -90,23 +84,18 @@ public class ApolloClusterConfigManager{
             if (groupList == null || groupList.isEmpty()) {
                 return;
             }
-            boolean needToChangeServerAddress = false;
 
-            for (ClusterGroupEntity clusterGroupEntity : groupList) {
-                //规则中的tokenServer地址与当前相等，不做处理
-                if (clusterGroupEntity.getIp().equals(ip) && clusterGroupEntity.getPort().equals(port)) {
-                    continue;
-                }
+            ClusterGroupEntity clusterGroupEntity = groupList.get(0);
 
-                clusterGroupEntity.setIp(ip);
-                clusterGroupEntity.setPort(port);
-                clusterGroupEntity.setMachineId(ip);
-                needToChangeServerAddress = true;
-            }
-
-            if (!needToChangeServerAddress) {
+            //规则中的tokenServer地址与当前相等，不做处理
+            if (clusterGroupEntity.getIp().equals(ip) && clusterGroupEntity.getPort().equals(port)) {
                 return;
             }
+
+            clusterGroupEntity.setIp(ip);
+            clusterGroupEntity.setPort(port);
+//            clusterGroupEntity.setMachineId(ip);
+
             openItemDTO.setValue(JSON.toJSONString(groupList));
             ApolloOpenApiClientHolder.getApolloOpenApiClient().createOrUpdateItem(sentinelAppId, projectEnv,
                     clusterName, appName, openItemDTO);
