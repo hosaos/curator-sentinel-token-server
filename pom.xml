@@ -20,7 +20,6 @@
         <fastjson.version>1.2.56</fastjson.version>
         <curator.version>2.13.0</curator.version>
         <apollo.version>1.4.0</apollo.version>
-        <ywwl.apollo.version>1.0.3</ywwl.apollo.version>
     </properties>
 
     <dependencies>
