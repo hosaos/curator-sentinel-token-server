@@ -96,6 +96,12 @@
             </properties>
         </profile>
         <profile>
+            <id>pre</id>
+            <properties>
+                <env>pre</env>
+            </properties>
+        </profile>
+        <profile>
             <id>online</id>
             <properties>
                 <env>online</env>
